@@ -51,7 +51,7 @@ resource "aws_eks_cluster" "k8squickstart-eks" {
   role_arn = aws_iam_role.eks-iam-role.arn
 
   enabled_cluster_log_types = ["api", "audit", "scheduler", "controllerManager"]
-  version = "1.24"
+  version = "1.25"
   vpc_config {
     subnet_ids = [var.subnet_id_1, var.subnet_id_2]
   }

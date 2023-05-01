@@ -35,5 +35,5 @@ variable "cluster_name" {
 
 variable "k8s_version" {
   type = string
-  defualt = "1.26.1-gke.1500"
+  default = "1.25.6-gke.1000"
 }

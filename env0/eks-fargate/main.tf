@@ -1,9 +1,4 @@
 terraform {
-  backend "s3" {
-    bucket = "terraform-state-k8senv"
-    key    = "eks-terraform.tfstate"
-    region = "us-east-1"
-  }
   required_providers {
     aws = {
       source = "hashicorp/aws"
@@ -11,8 +6,6 @@ terraform {
   }
 }
 
-
-# IAM Role for EKS to have access to the appropriate resources
 resource "aws_iam_role" "eks-iam-role" {
   name = "k8senv-eks-iam-role"
 
@@ -35,7 +28,6 @@ EOF
 
 }
 
-## Attach the IAM policy to the IAM role
 resource "aws_iam_role_policy_attachment" "AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.eks-iam-role.name
@@ -46,7 +38,6 @@ resource "aws_iam_role_policy_attachment" "CloudWatchAgentServerPolicy-eks" {
   role       = aws_iam_role.eks-iam-role.name
 }
 
-## Create the EKS cluster
 resource "aws_eks_cluster" "k8senv-eks" {
   name = "k8senv-cluster"
   role_arn = aws_iam_role.eks-iam-role.arn

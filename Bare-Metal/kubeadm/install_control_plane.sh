@@ -10,6 +10,8 @@ echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt
 
 sudo apt update -y 
 
+sudo su -
+
 # Install and configure the CRI-O container runtime
 OS=xUbuntu_20.04
 VERSION=1.22
@@ -19,6 +21,8 @@ echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:
 
 curl -L https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable:cri-o:$VERSION/$OS/Release.key | apt-key add -
 curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/$OS/Release.key | apt-key add -
+
+exit
 
 sudo apt update -y
 sudo apt install cri-o cri-o-runc -y
@@ -44,7 +48,14 @@ EOF
 
 sudo sysctl --system
 
-# Install and configure Kubeadm
+# Install and configure Kubeadm with the latest version of Kubernetes.
 sudo apt-get install -y kubelet kubeadm kubectl
 
-apt-mark hold kubelet kubeadm kubectl
+# To install a specific version of Kubernetes (not the latest), you can use the following...
+# Example: sudo apt-get install -qy kubelet=1.25.5-00 kubectl=1.25.5-00 kubeadm=1.25.5-00
+
+# You can see all Kubernetes versions available for Kubeadm like this: `apt list -a kubeadm`
+
+sudo apt-get install -qy kubelet=<version> kubectl=<version> kubeadm=<version>
+
+sudo apt-mark hold kubelet kubeadm kubectl

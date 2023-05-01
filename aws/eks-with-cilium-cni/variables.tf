@@ -8,7 +8,11 @@ variable "subnet_id_2" {
   default = "subnet-081d97174d250cffd"
 }
 
-variable "private_subnet_id_1" {
+variable "desired_size" {
   type = string
-  default = "subnet-05af3ab0479a38e85"
+  default = 1
+}
+variable "min_size" {
+  type = string
+  default = 1
 }

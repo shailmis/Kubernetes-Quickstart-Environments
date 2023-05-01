@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "terraform-state-k8senv"
-    key    = "eks-terraform-workernodes.tfstate"
+    key    = "eks-terraform-workernodes-bottlerocket.tfstate"
     region = "us-east-1"
   }
   required_providers {
@@ -47,11 +47,11 @@ resource "aws_iam_role_policy_attachment" "AmazonEC2ContainerRegistryReadOnly-EK
 
 ## Create the EKS cluster
 resource "aws_eks_cluster" "k8squickstart-eks" {
-  name = "k8squickstart-cluster"
+  name     = "k8squickstart-cluster"
   role_arn = aws_iam_role.eks-iam-role.arn
 
   enabled_cluster_log_types = ["api", "audit", "scheduler", "controllerManager"]
-  version = "1.24"
+  version                   = "1.24"
   vpc_config {
     subnet_ids = [var.subnet_id_1, var.subnet_id_2]
   }
@@ -106,12 +106,14 @@ resource "aws_iam_role_policy_attachment" "AmazonEBSCSIDriverPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
   role       = aws_iam_role.workernodes.name
 }
+
 resource "aws_eks_node_group" "worker-node-group" {
   cluster_name    = aws_eks_cluster.k8squickstart-eks.name
+  ami_type        = var.AMI
   node_group_name = "k8squickstart-workernodes"
   node_role_arn   = aws_iam_role.workernodes.arn
   subnet_ids      = [var.subnet_id_1, var.subnet_id_2]
-  instance_types = ["t3.xlarge"]
+  instance_types  = ["t3.xlarge"]
 
   scaling_config {
     desired_size = var.desired_size
